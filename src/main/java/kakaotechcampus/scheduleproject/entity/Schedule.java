@@ -1,11 +1,12 @@
 package kakaotechcampus.scheduleproject.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import java.time.LocalDateTime;
+import lombok.*;
+
+import java.time.LocalDate;
 
 @Setter
 @Getter
+@NoArgsConstructor
 public class Schedule {
 
     private Long id;
@@ -16,8 +17,8 @@ public class Schedule {
 
     private String password;
 
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
-    private LocalDateTime modifiedAt;
+    private LocalDate modifiedAt;
 
 }

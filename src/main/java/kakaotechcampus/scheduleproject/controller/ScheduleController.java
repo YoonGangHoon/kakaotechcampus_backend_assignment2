@@ -1,15 +1,12 @@
 package kakaotechcampus.scheduleproject.controller;
 
-import kakaotechcampus.scheduleproject.dto.ScheduleCreateRequestDto;
-import kakaotechcampus.scheduleproject.dto.ScheduleCreateResponseDto;
-import kakaotechcampus.scheduleproject.dto.ScheduleResponseDto;
+import kakaotechcampus.scheduleproject.dto.*;
 import kakaotechcampus.scheduleproject.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -49,6 +46,36 @@ public class ScheduleController {
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @PathVariable Long id,
+            @RequestBody ScheduleUpdateRequestDto requestDto) {
+        try {
+            ScheduleResponseDto responseDto = scheduleService.updateSchedule(id, requestDto);
+            return ResponseEntity.ok(responseDto);
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteSchedule(
+            @PathVariable Long id,
+            @RequestBody ScheduleDeleteRequestDto requestDto
+    ) {
+        try {
+            scheduleService.deleteSchedule(id, requestDto);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 }

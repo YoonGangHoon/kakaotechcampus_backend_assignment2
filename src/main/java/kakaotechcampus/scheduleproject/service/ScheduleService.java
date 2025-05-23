@@ -1,15 +1,13 @@
 package kakaotechcampus.scheduleproject.service;
 
-import kakaotechcampus.scheduleproject.dto.ScheduleCreateRequestDto;
-import kakaotechcampus.scheduleproject.dto.ScheduleCreateResponseDto;
-import kakaotechcampus.scheduleproject.dto.ScheduleResponseDto;
+import kakaotechcampus.scheduleproject.dto.*;
 import kakaotechcampus.scheduleproject.entity.Schedule;
 import kakaotechcampus.scheduleproject.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +17,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     public ScheduleCreateResponseDto createSchedule(ScheduleCreateRequestDto requestDto) throws SQLException {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         Schedule schedule = new Schedule();
         schedule.setTitle(requestDto.getTitle());
         schedule.setAuthor(requestDto.getAuthor());
@@ -36,13 +34,54 @@ public class ScheduleService {
                         schedule.getId(),
                         schedule.getTitle(),
                         schedule.getAuthor(),
-                        schedule.getModifiedAt().toLocalDate()
+                        schedule.getModifiedAt()
                 ))
                 .collect(Collectors.toList());
     }
 
     public ScheduleResponseDto getScheduleById(Long id) throws SQLException {
-        return scheduleRepository.findById(id);
+        Schedule schedule = scheduleRepository.findById(id);
+        return ScheduleResponseDto.builder()
+                .id(schedule.getId())
+                .title(schedule.getTitle())
+                .author(schedule.getAuthor())
+                .modifiedAt(schedule.getModifiedAt())
+                .build();
     }
 
+    public ScheduleResponseDto updateSchedule(Long id, ScheduleUpdateRequestDto requestDto) throws SQLException {
+        Schedule schedule = scheduleRepository.findById(id);
+        if (schedule == null) {
+            throw new IllegalArgumentException("해당 일정이 존재하지 않습니다.");
+        }
+
+        if (!schedule.getPassword().equals(requestDto.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        schedule.setAuthor(requestDto.getAuthor());
+        schedule.setTitle(requestDto.getTitle());
+        schedule.setModifiedAt(LocalDate.now());
+
+        scheduleRepository.update(schedule);
+
+        return new ScheduleResponseDto(
+                schedule.getId(),
+                schedule.getTitle(),
+                schedule.getAuthor(),
+                schedule.getModifiedAt()
+        );
+    }
+
+    public void deleteSchedule(Long id, ScheduleDeleteRequestDto requestDto) throws SQLException{
+        Schedule schedule = scheduleRepository.findById(id);
+        if (schedule == null) {
+            throw new IllegalArgumentException("해당 일정이 존재하지 않습니다.");
+        }
+
+        if (!schedule.getPassword().equals(requestDto.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+        scheduleRepository.delete(id);
+    }
 }
