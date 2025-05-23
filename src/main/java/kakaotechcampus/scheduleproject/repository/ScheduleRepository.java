@@ -1,5 +1,8 @@
 package kakaotechcampus.scheduleproject.repository;
 
+import kakaotechcampus.scheduleproject.config.DataSourceProperties;
+import kakaotechcampus.scheduleproject.dto.ScheduleCreateResponseDto;
+import kakaotechcampus.scheduleproject.dto.ScheduleResponseDto;
 import kakaotechcampus.scheduleproject.entity.Schedule;
 import org.springframework.stereotype.Repository;
 
@@ -10,11 +13,21 @@ import java.util.List;
 @Repository
 public class ScheduleRepository {
 
-    private Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql://localhost:3306/your_db", "your_user", "your_password");
+    private final DataSourceProperties dataSourceProperties;
+
+    public ScheduleRepository(DataSourceProperties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
     }
 
-    public Long save(Schedule schedule) throws SQLException {
+    private Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(
+                dataSourceProperties.getUrl(),
+                dataSourceProperties.getUsername(),
+                dataSourceProperties.getPassword()
+        );
+    }
+
+    public ScheduleCreateResponseDto save(Schedule schedule) throws SQLException {
         String sql = "INSERT INTO Schedule (title, author, password, createdAt, modifiedAt) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -26,16 +39,22 @@ public class ScheduleRepository {
             pstmt.setTimestamp(5, Timestamp.valueOf(schedule.getModifiedAt()));
             pstmt.executeUpdate();
 
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getLong(1);
+            try (ResultSet resultSet = pstmt.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    return ScheduleCreateResponseDto.builder()
+                            .id(resultSet.getLong(1))
+                            .title(schedule.getTitle())
+                            .createdAt(schedule.getCreatedAt())
+                            .modifiedAt(schedule.getModifiedAt())
+                            .build();
+
                 }
             }
         }
         return null;
     }
 
-    public Schedule findById(Long id) throws SQLException {
+    public ScheduleResponseDto findById(Long id) throws SQLException {
         String sql = "SELECT * FROM Schedule WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,7 +63,12 @@ public class ScheduleRepository {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                return mapResultSetToSchedule(rs);
+                return ScheduleResponseDto.builder()
+                        .id(rs.getLong("id"))
+                        .title(rs.getString("title"))
+                        .author(rs.getString("author"))
+                        .modifiedAt(rs.getTimestamp("modifiedAt").toLocalDateTime().toLocalDate())
+                        .build();
             }
         }
         return null;
