@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @RestController
 @RequestMapping("/authors")
 @RequiredArgsConstructor
@@ -16,48 +18,29 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<AuthorCreateResponseDto> createAuthor(@RequestBody AuthorCreateRequestDto requestDto) {
-        try{
-            AuthorCreateResponseDto responseDto = authorService.createAuthor(requestDto);
-            return ResponseEntity.ok(responseDto);
-        } catch (Exception e){
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<AuthorCreateResponseDto> createAuthor(@RequestBody AuthorCreateRequestDto requestDto) throws SQLException  {
+        AuthorCreateResponseDto responseDto = authorService.createAuthor(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AuthorResponseDto> getAuthorById(@PathVariable Long id) {
-        try {
-            AuthorResponseDto responseDto = authorService.findById(id);
-            return ResponseEntity.ok(responseDto);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<AuthorResponseDto> getAuthorById(@PathVariable Long id) throws SQLException {
+        AuthorResponseDto responseDto = authorService.findById(id);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<AuthorResponseDto> updateAuthor(
             @PathVariable Long id,
-            @RequestBody AuthorUpdateRequestDto requestDto) {
-        try {
-            AuthorResponseDto responseDto = authorService.updateAuthor(id, requestDto);
-            return ResponseEntity.ok(responseDto);
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(null);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return ResponseEntity.internalServerError().build();
-        }
+            @RequestBody AuthorUpdateRequestDto requestDto) throws SQLException {
+        AuthorResponseDto responseDto = authorService.updateAuthor(id, requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteAuthor(@PathVariable Long id) {
-        try {
-            authorService.deleteAuthor(id);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> deleteAuthor(@PathVariable Long id) throws SQLException {
+        authorService.deleteAuthor(id);
+        return ResponseEntity.ok().build();
     }
 
 }

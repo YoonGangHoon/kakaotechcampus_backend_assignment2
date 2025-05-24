@@ -65,13 +65,13 @@ public class ScheduleRepository {
         return null;
     }
 
-    public List<Schedule> findAllByModifiedDate(String author, String modifiedDate) throws SQLException {
+    public List<Schedule> findAllByModifiedDateAndAuthor(Long authorId, String modifiedDate) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM Schedule WHERE 1=1");
         List<Object> params = new ArrayList<>();
 
-        if (author != null && !author.isBlank()) {
-            sql.append(" AND author = ?");
-            params.add(author);
+        if (authorId != null) {
+            sql.append(" AND author_id = ?");
+            params.add(authorId);
         }
 
         if (modifiedDate != null && !modifiedDate.isBlank()) {
@@ -129,4 +129,5 @@ public class ScheduleRepository {
         schedule.setModifiedAt(rs.getDate("modifiedAt").toLocalDate());
         return schedule;
     }
+
 }

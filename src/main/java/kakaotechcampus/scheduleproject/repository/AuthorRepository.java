@@ -84,4 +84,18 @@ public class AuthorRepository {
             stmt.executeUpdate();
         }
     }
+
+    public boolean existsAuthorById(Long authorId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Author WHERE id = ?";
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setLong(1, authorId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) <= 0;
+            }
+            return true;
+        }
+    }
 }

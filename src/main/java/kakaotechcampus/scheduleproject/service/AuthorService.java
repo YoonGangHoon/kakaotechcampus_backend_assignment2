@@ -5,6 +5,7 @@ import kakaotechcampus.scheduleproject.dto.author.AuthorCreateResponseDto;
 import kakaotechcampus.scheduleproject.dto.author.AuthorResponseDto;
 import kakaotechcampus.scheduleproject.dto.author.AuthorUpdateRequestDto;
 import kakaotechcampus.scheduleproject.entity.Author;
+import kakaotechcampus.scheduleproject.exception.AuthorNotFoundException;
 import kakaotechcampus.scheduleproject.repository.AuthorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,9 @@ public class AuthorService {
 
     public AuthorResponseDto findById(Long id) throws SQLException{
         Author author = authorRepository.findById(id);
+        if (author == null) {
+            throw new AuthorNotFoundException(id);
+        }
 
         return new AuthorResponseDto(author.getName(), author.getEmail());
     }
@@ -38,7 +42,7 @@ public class AuthorService {
     public AuthorResponseDto updateAuthor(Long id, AuthorUpdateRequestDto requestDto) throws SQLException{
         Author author = authorRepository.findById(id);
         if (author == null) {
-            throw new IllegalArgumentException("해당 작성자가 존재하지 않습니다.");
+            throw new AuthorNotFoundException(id);
         }
 
         author.setName(requestDto.getName());
@@ -54,6 +58,9 @@ public class AuthorService {
     }
 
     public void deleteAuthor(Long id) throws SQLException{
+        if (authorRepository.existsAuthorById(id)) {
+            throw new AuthorNotFoundException(id);
+        }
         authorRepository.delete(id);
     }
 }
