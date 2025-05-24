@@ -65,7 +65,7 @@ public class ScheduleRepository {
         return null;
     }
 
-    public List<Schedule> findAll(String author, String modifiedDate) throws SQLException {
+    public List<Schedule> findAllByModifiedDate(String author, String modifiedDate) throws SQLException {
         StringBuilder sql = new StringBuilder("SELECT * FROM Schedule WHERE 1=1");
         List<Object> params = new ArrayList<>();
 

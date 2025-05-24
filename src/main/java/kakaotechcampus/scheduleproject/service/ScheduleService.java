@@ -27,8 +27,8 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
-    public List<ScheduleResponseDto> getAllSchedules(String author, String modifiedDate) throws SQLException {
-        List<Schedule> schedules = scheduleRepository.findAll(author, modifiedDate);
+    public List<ScheduleResponseDto> getAllSchedulesByModifiedDate(String author, String modifiedDate) throws SQLException {
+        List<Schedule> schedules = scheduleRepository.findAllByModifiedDate(author, modifiedDate);
         return schedules.stream()
                 .map(schedule -> new ScheduleResponseDto(
                         schedule.getId(),

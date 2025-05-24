@@ -27,12 +27,12 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> getAllSchedules(
+    public ResponseEntity<List<ScheduleResponseDto>> getAllSchedulesByModifiedDate(
             @RequestParam(required = false) String author,
             @RequestParam(required = false) String modifiedDate // 형식: YYYY-MM-DD
     ) {
         try {
-            List<ScheduleResponseDto> schedules = scheduleService.getAllSchedules(author, modifiedDate);
+            List<ScheduleResponseDto> schedules = scheduleService.getAllSchedulesByModifiedDate(author, modifiedDate);
             return new ResponseEntity<>(schedules, HttpStatus.OK);
         } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
