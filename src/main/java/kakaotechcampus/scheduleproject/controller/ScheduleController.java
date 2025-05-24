@@ -1,6 +1,6 @@
 package kakaotechcampus.scheduleproject.controller;
 
-import kakaotechcampus.scheduleproject.dto.*;
+import kakaotechcampus.scheduleproject.dto.schedule.*;
 import kakaotechcampus.scheduleproject.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -61,7 +61,6 @@ public class ScheduleController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
-
     }
 
     @DeleteMapping("/{id}")

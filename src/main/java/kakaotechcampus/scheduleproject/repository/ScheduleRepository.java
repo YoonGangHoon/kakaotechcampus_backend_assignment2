@@ -1,8 +1,9 @@
 package kakaotechcampus.scheduleproject.repository;
 
 import kakaotechcampus.scheduleproject.config.DataSourceProperties;
-import kakaotechcampus.scheduleproject.dto.ScheduleCreateResponseDto;
+import kakaotechcampus.scheduleproject.dto.schedule.ScheduleCreateResponseDto;
 import kakaotechcampus.scheduleproject.entity.Schedule;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -10,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class ScheduleRepository {
 
     private final DataSourceProperties dataSourceProperties;
-
-    public ScheduleRepository(DataSourceProperties dataSourceProperties) {
-        this.dataSourceProperties = dataSourceProperties;
-    }
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
@@ -27,12 +25,12 @@ public class ScheduleRepository {
     }
 
     public ScheduleCreateResponseDto save(Schedule schedule) throws SQLException {
-        String sql = "INSERT INTO Schedule (title, author, password, createdAt, modifiedAt) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Schedule (title, author_id, password, createdAt, modifiedAt) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, schedule.getTitle());
-            stmt.setString(2, schedule.getAuthor());
+            stmt.setLong(2, schedule.getAuthorId());
             stmt.setString(3, schedule.getPassword());
             stmt.setDate(4, Date.valueOf(schedule.getCreatedAt()));
             stmt.setDate(5, Date.valueOf(schedule.getModifiedAt()));
@@ -60,7 +58,6 @@ public class ScheduleRepository {
 
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 return mapResultSetToSchedule(rs);
             }
@@ -101,12 +98,12 @@ public class ScheduleRepository {
     }
 
     public void update(Schedule schedule) throws SQLException {
-        String sql = "UPDATE Schedule SET title = ?, author = ?, modifiedAt = ? WHERE id = ?";
+        String sql = "UPDATE Schedule SET title = ?, author_id = ?, modifiedAt = ? WHERE id = ?";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, schedule.getTitle());
-            stmt.setString(2, schedule.getAuthor());
+            stmt.setLong(2, schedule.getAuthorId());
             stmt.setDate(3, Date.valueOf(schedule.getModifiedAt()));
             stmt.setLong(4, schedule.getId());
             stmt.executeUpdate();
@@ -126,7 +123,7 @@ public class ScheduleRepository {
         Schedule schedule = new Schedule();
         schedule.setId(rs.getLong("id"));
         schedule.setTitle(rs.getString("title"));
-        schedule.setAuthor(rs.getString("author"));
+        schedule.setAuthorId(rs.getLong("author_id"));
         schedule.setPassword(rs.getString("password"));
         schedule.setCreatedAt(rs.getDate("createdAt").toLocalDate());
         schedule.setModifiedAt(rs.getDate("modifiedAt").toLocalDate());

@@ -1,6 +1,6 @@
 package kakaotechcampus.scheduleproject.service;
 
-import kakaotechcampus.scheduleproject.dto.*;
+import kakaotechcampus.scheduleproject.dto.schedule.*;
 import kakaotechcampus.scheduleproject.entity.Schedule;
 import kakaotechcampus.scheduleproject.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +20,7 @@ public class ScheduleService {
         LocalDate now = LocalDate.now();
         Schedule schedule = new Schedule();
         schedule.setTitle(requestDto.getTitle());
-        schedule.setAuthor(requestDto.getAuthor());
+        schedule.setAuthorId(requestDto.getAuthorId());
         schedule.setPassword(requestDto.getPassword());
         schedule.setCreatedAt(now);
         schedule.setModifiedAt(now);
@@ -33,7 +33,7 @@ public class ScheduleService {
                 .map(schedule -> new ScheduleResponseDto(
                         schedule.getId(),
                         schedule.getTitle(),
-                        schedule.getAuthor(),
+                        schedule.getAuthorId(),
                         schedule.getModifiedAt()
                 ))
                 .collect(Collectors.toList());
@@ -44,8 +44,8 @@ public class ScheduleService {
         return ScheduleResponseDto.builder()
                 .id(schedule.getId())
                 .title(schedule.getTitle())
-                .author(schedule.getAuthor())
                 .modifiedAt(schedule.getModifiedAt())
+                .authorId(schedule.getAuthorId())
                 .build();
     }
 
@@ -59,7 +59,7 @@ public class ScheduleService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        schedule.setAuthor(requestDto.getAuthor());
+        schedule.setAuthorId(requestDto.getAuthorId());
         schedule.setTitle(requestDto.getTitle());
         schedule.setModifiedAt(LocalDate.now());
 
@@ -68,7 +68,7 @@ public class ScheduleService {
         return new ScheduleResponseDto(
                 schedule.getId(),
                 schedule.getTitle(),
-                schedule.getAuthor(),
+                schedule.getAuthorId(),
                 schedule.getModifiedAt()
         );
     }

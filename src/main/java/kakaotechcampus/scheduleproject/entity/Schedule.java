@@ -13,12 +13,12 @@ public class Schedule {
 
     private String title;
 
-    private String author;
-
     private String password;
 
     private LocalDate createdAt;
 
     private LocalDate modifiedAt;
+
+    private Long authorId;
 
 }

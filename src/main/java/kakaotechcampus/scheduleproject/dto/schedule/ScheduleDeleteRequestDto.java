@@ -1,4 +1,4 @@
-package kakaotechcampus.scheduleproject.dto;
+package kakaotechcampus.scheduleproject.dto.schedule;
 
 import lombok.Getter;
 import lombok.Setter;

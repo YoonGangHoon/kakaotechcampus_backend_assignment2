@@ -1,17 +1,18 @@
-package kakaotechcampus.scheduleproject.dto;
+package kakaotechcampus.scheduleproject.dto.schedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-
 @Getter
 @Setter
 @Builder
-public class ScheduleCreateResponseDto {
+@AllArgsConstructor
+public class ScheduleResponseDto {
     private Long id;
     private String title;
-    private LocalDate createdAt;
+    private Long authorId;
     private LocalDate modifiedAt;
 }
