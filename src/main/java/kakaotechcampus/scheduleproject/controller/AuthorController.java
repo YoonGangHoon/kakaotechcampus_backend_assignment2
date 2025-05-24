@@ -1,5 +1,6 @@
 package kakaotechcampus.scheduleproject.controller;
 
+import jakarta.validation.Valid;
 import kakaotechcampus.scheduleproject.dto.author.AuthorCreateRequestDto;
 import kakaotechcampus.scheduleproject.dto.author.AuthorCreateResponseDto;
 import kakaotechcampus.scheduleproject.dto.author.AuthorResponseDto;
@@ -18,7 +19,7 @@ public class AuthorController {
     private final AuthorService authorService;
 
     @PostMapping
-    public ResponseEntity<AuthorCreateResponseDto> createAuthor(@RequestBody AuthorCreateRequestDto requestDto) throws SQLException  {
+    public ResponseEntity<AuthorCreateResponseDto> createAuthor(@RequestBody @Valid AuthorCreateRequestDto requestDto) throws SQLException  {
         AuthorCreateResponseDto responseDto = authorService.createAuthor(requestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -32,7 +33,7 @@ public class AuthorController {
     @PutMapping("/{id}")
     public ResponseEntity<AuthorResponseDto> updateAuthor(
             @PathVariable Long id,
-            @RequestBody AuthorUpdateRequestDto requestDto) throws SQLException {
+            @RequestBody @Valid AuthorUpdateRequestDto requestDto) throws SQLException {
         AuthorResponseDto responseDto = authorService.updateAuthor(id, requestDto);
         return ResponseEntity.ok(responseDto);
     }

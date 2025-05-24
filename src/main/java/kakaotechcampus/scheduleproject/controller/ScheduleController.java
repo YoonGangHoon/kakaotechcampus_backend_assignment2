@@ -1,5 +1,6 @@
 package kakaotechcampus.scheduleproject.controller;
 
+import jakarta.validation.Valid;
 import kakaotechcampus.scheduleproject.dto.schedule.*;
 import kakaotechcampus.scheduleproject.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<ScheduleCreateResponseDto> createSchedule(@RequestBody ScheduleCreateRequestDto requestDto) throws SQLException {
+    public ResponseEntity<ScheduleCreateResponseDto> createSchedule(@RequestBody @Valid ScheduleCreateRequestDto requestDto) throws SQLException {
         ScheduleCreateResponseDto responseDto = scheduleService.createSchedule(requestDto);
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -41,7 +42,7 @@ public class ScheduleController {
     @PutMapping("/{id}")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(
             @PathVariable Long id,
-            @RequestBody ScheduleUpdateRequestDto requestDto) throws SQLException {
+            @RequestBody @Valid ScheduleUpdateRequestDto requestDto) throws SQLException {
 
         ScheduleResponseDto responseDto = scheduleService.updateSchedule(id, requestDto);
         return ResponseEntity.ok(responseDto);
