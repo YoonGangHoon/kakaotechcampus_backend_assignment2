@@ -72,6 +72,9 @@ public class ScheduleService {
         if (!schedule.getPassword().equals(requestDto.getPassword())) {
             throw new PasswordMismatchException();
         }
+        if (authorRepository.existsAuthorById(requestDto.getAuthorId())) {
+            throw new AuthorNotFoundException(requestDto.getAuthorId());
+        }
 
         schedule.setAuthorId(requestDto.getAuthorId());
         schedule.setTitle(requestDto.getTitle());
